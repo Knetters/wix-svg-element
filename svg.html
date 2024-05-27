@@ -1,0 +1,272 @@
+<!-- Plaats het SVG bestand tussen het begin en het einde SVG commentaar. Controlleer of de id's van de <g> elementen hetzelgde zijn als de titels in het CMS. -->
+
+<!-- Begin SVG -->
+
+<!-- Einde SVG -->
+
+<div id="myModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-body">
+      <span class="close">×</span>
+      <div id="output">
+        <!-- Modal output -->
+      </div>
+    </div>
+    <div class="modal-footer">
+      <a class="inschrijven" href="https://bv61.nl/#schrijfjein">Inschrijven</a>
+    </div>
+  </div>
+</div>
+
+<head>
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+  />
+</head>
+<style>
+  body {
+    margin: 0;
+  }
+
+  polygon:hover,
+  path:hover,
+  polyline:hover {
+    fill: #ab9171 !important;
+    cursor: pointer;
+  }
+
+  polygon.verkocht,
+  path.verkocht,
+  polyline.verkocht {
+    fill: #ff000085 !important;
+  }
+
+  polygon.in-optie,
+  path.in-optie,
+  polyline.in-optie {
+    fill: #ffa50085 !important;
+  }
+
+  polygon.beschikbaar,
+  path.beschikbaar,
+  polyline.beschikbaar {
+    fill: #00ff0085;
+  }
+
+  .modal {
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 200;
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0, 0, 0);
+    background-color: rgba(0, 0, 0, 0.4);
+    -webkit-animation-name: fadeIn;
+    -webkit-animation-duration: 0.4s;
+    animation-name: fadeIn;
+    animation-duration: 0.4s;
+  }
+
+  .modal-content {
+    position: fixed;
+    bottom: 1rem;
+    left: 1rem;
+    background-color: #fefefe;
+    border-radius: 0.5rem;
+    -webkit-animation-name: slideIn;
+    -webkit-animation-duration: 0.4s;
+    animation-name: slideIn;
+    animation-duration: 0.4s;
+  }
+
+  @media screen and (max-width: 767px) {
+    .modal-content {
+      width: calc(100% - 2rem);
+    }
+  }
+
+  .close {
+    color: #000;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    margin-top: -0.5rem;
+  }
+
+  .close:hover,
+  .close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .modal-body {
+    font-size: 1rem;
+    padding: 1rem;
+  }
+
+  .modal-footer {
+    text-align: center;
+    padding: 1rem 1rem 2rem 1rem;
+    background-color: #fff;
+    color: #000;
+    border-radius: 0.5rem;
+  }
+
+  @-webkit-keyframes slideIn {
+    from {
+      transform: translateY(300px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes slideIn {
+    from {
+      transform: translateY(300px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  @-webkit-keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  .modal h3 {
+    font-size: 1.4rem;
+    margin-top: 0.6rem;
+  }
+
+  .modal-list {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  .modal-list li {
+    margin-bottom: 0.5rem;
+  }
+
+  .modal-list li i {
+    width: 2rem;
+  }
+
+  .inschrijven {
+    background-color: #000;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 1rem;
+    padding: 1rem 2rem;
+  }
+
+  .status-label {
+    text-transform: capitalize;
+  }
+
+  polygon {
+    stroke: #fff;
+    stroke-miterlimit: 10;
+  }
+
+  g {
+    fill: #fff;
+    opacity: 0.5;
+  }
+
+  g:first-child {
+    opacity: 1;
+  }
+</style>
+
+<script>
+  window.addEventListener("message", (event) => {
+    if (event.data === "getSvgGIds") {
+      const gElements = document.querySelectorAll("svg g");
+      const gIds = Array.from(gElements)
+        .map((g) => g.id)
+        .filter((id) => id);
+      event.source.postMessage({ type: "svgGIds", data: gIds }, "*");
+    }
+
+    if (event.data.type === "updateStatuses") {
+      const statusUpdates = event.data.data;
+      console.log("Received status updates:", statusUpdates);
+
+      statusUpdates.forEach(({ id, details }) => {
+        const gElement = document.getElementById(id);
+        if (gElement) {
+          const polygon = gElement.querySelector("polygon");
+          if (polygon) {
+            polygon.classList.remove("verkocht", "in-optie", "beschikbaar");
+            polygon.classList.add(details.status);
+
+            gElement.onclick = function () {
+              displayHouseDetails(details);
+            };
+          }
+        }
+      });
+    }
+  });
+
+  function displayHouseDetails(details) {
+    const modal = document.getElementById("myModal");
+    const output = document.getElementById("output");
+
+    let priceInfo = "";
+    if (details.status !== "verkocht") {
+      priceInfo = `<li><i class="fas fa-euro-sign"></i>Vanaf €${details.vraagprijs},- V.O.N. (ex btw)</li>`;
+    }
+
+    output.innerHTML = `
+              <h3>Unit ${details.unit} - Type ${details.type}</h3>
+              <ul class="modal-list">
+                <li><i class="fas fa-ruler"></i>${details.oppervlakte} m² VVO</li>
+                <li><i class="fas fa-house"></i>${details.lagen} lagen met dakterras</li>
+                <li><i class="fas fa-parking"></i>${details.parkeerplaatsen} parkeerplekken</li>
+                ${priceInfo}
+                <li class="status-label"><i class="fas fa-star"></i>${details.status}</li>
+              </ul>
+          `;
+
+    modal.style.display = "block";
+  }
+
+  document.querySelector(".close").onclick = function () {
+    document.getElementById("myModal").style.display = "none";
+  };
+
+  window.onclick = function (event) {
+    const modal = document.getElementById("myModal");
+    if (event.target === modal) {
+      modal.style.display = "none";
+    }
+  };
+</script>
