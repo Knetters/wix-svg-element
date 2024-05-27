@@ -16,6 +16,7 @@ Wix Data Import:
 Voeg de volgende code toe aan je Wix-site om gegevens uit de database op te halen en te verwerken:
 
 Klik op het knopje code om een globaal script bestand aan te maken.
+
 ![Screenshot 2024-05-27 at 13 06 44](https://github.com/Knetters/wix-svg-element/assets/60781257/f84ecc94-1cf8-4ad1-8a03-fa9e44247606)
 
 Hier voeg je de volgende code aan toe. Met dit voorbeeld haal ik data op uit colom huizen.
@@ -92,6 +93,7 @@ function formatPrice(price) {
 
 SVG Integratie:
 Voeg een ifame element toe en zet daar de code van svg.html in.
+
 ![Screenshot 2024-05-27 at 13 08 47](https://github.com/Knetters/wix-svg-element/assets/60781257/be3c2ebd-80b0-430f-99b4-6d988a902d01)
 
 Voeg je SVG-bestand toe in tussen de aangegeven commentaren en zorg ervoor dat de id's van de <g>-elementen overeenkomen met de titels in de database.
