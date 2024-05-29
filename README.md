@@ -1,6 +1,8 @@
 # Dynamic Overlay voor Huizenverkoop op SVG
 Deze handleiding legt uit hoe je een dynamische overlay kunt creëren op een SVG-bestand met informatie over te koop staande huizen. Deze overlay wordt aangedreven door gegevens uit een Wix-database.
 
+![Screenshot 2024-05-29 at 11 10 54](https://github.com/Knetters/wix-svg-element/assets/60781257/0febb2df-e4a7-4cba-a298-66dcfa87ae34)
+
 ## Inhoudsopgave
 Beschrijving
 Installatie
